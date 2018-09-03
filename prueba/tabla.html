@@ -1,0 +1,168 @@
+<html>
+<head>
+ <title>Firebase Realtime Database Web</title>
+ <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+ <script>
+   // Initialize Firebase
+ var config = {
+    apiKey: "AIzaSyAt8eaIIEeouzUXD6saYaLCrR1iYV20UlE",
+    authDomain: "prueba-de-programacion-5eaad.firebaseapp.com",
+    databaseURL: "https://prueba-de-programacion-5eaad.firebaseio.com",
+    projectId: "prueba-de-programacion-5eaad",
+    storageBucket: "prueba-de-programacion-5eaad.appspot.com",
+    messagingSenderId: "110456555196"
+  };
+  firebase.initializeApp(config);
+ </script>
+</head>
+<body>
+ <table>
+  <tr>
+   <td>Id: </td>
+   <td><input type="text" name="id" id="user_id" /></td>
+  </tr>
+  <tr>
+   <td>Correo: </td>
+   <td><input type="text" name="correo" id="correo" /></td>
+  </tr>
+  <tr>
+   <tr>
+   <td>Direccion: </td>
+   <td><input type="text" name="direccion" id="direccion" /></td>
+  </tr>
+   <tr>
+   <td>Director: </td>
+   <td><input type="text" name="director" id="director" /></td>
+  </tr>
+   <tr>
+   <td>Municipio: </td>
+   <td><input type="text" name="municipio" id="municipio" /></td>
+  </tr>
+   <tr>
+   <td>Telefono: </td>
+   <td><input type="text" name="telefono" id="telefono" /></td>
+  </tr>
+   <tr>
+   <td>Tipo: </td>
+   <td><input type="text" name="tipo" id="tipo" /></td>
+  </tr>
+  <tr>
+   <td colspan="2">
+    <input type="button" value="Save" onclick="save_user();" />
+    <input type="button" value="Update" onclick="update_user();" />
+    <input type="button" value="Delete" onclick="delete_user();" />
+   </td>
+  </tr>
+ </table>
+
+ 
+
+ 
+ <script>
+ 
+  var tblUsers = document.getElementById('tbl_users_list');
+  var databaseRef = firebase.database().ref('datos/');
+  var rowIndex = 6;
+  
+  databaseRef.once('value', function(snapshot) {
+    snapshot.forEach(function(childSnapshot) {
+   var childKey = childSnapshot.key;
+   var childData = childSnapshot.val();
+   
+   var row = tbldatos.insertRow(rowIndex);
+   var cellId = row.insertCell(0);
+   var cellCorreo = row.insertCell(1);
+   var cellDireccion = row.insertCell(3);
+   var cellDirector = row.insertCell(4);
+   var cellMunicipio = row.insertCell(5);
+   var cellTelefono = row.insertCell(6);
+   var cellTipo = row.insertCell(7);
+
+   cellId.appendChild(document.createTextNode(childKey));
+   cellCorreo.appendChild(document.createTextNode(childData.correo));
+   cellDireccion.appendChild(document.createTextNode(childData.direccion));
+   cellDirector.appendChild(document.createTextNode(childData.director));
+   cellMunicipio.appendChild(document.createTextNode(childData.municipio));
+   cellTelefono.appendChild(document.createTextNode(childData.telefono));
+   cellTipo.appendChild(document.createTextNode(childData.tipo));
+   
+   rowIndex = rowIndex + 1;
+    });
+  });
+   
+  function save_user(){
+ 
+   var uid = firebase.database().ref().child('datos').push().key;
+   var correo = document.getElementById('correo').value;
+   var direccion= document.getElementById('direccion').value;  
+   var director = document.getElementById('director').value;
+   var municipio= document.getElementById('municipio').value;  
+   var telefono = document.getElementById('telefono').value;
+   var tipo = document.getElementById('tipo').value;
+   
+   
+   var data = {
+    user_id: uid,
+    correo: correo,
+    direccion:direccion,
+    director:director,
+    municipio:municipio,
+    telefono:telefono,
+    tipo:tipo
+    
+   }
+   
+   var updates = {};
+   updates['/datos/' + uid] = data;
+   firebase.database().ref().update(updates);
+   
+   alert('The user is created successfully!');
+   reload_page();
+  }
+  
+  function update_user(){
+   
+   var user_id = document.getElementById('user_id').value;
+   var uid = firebase.database().ref().child('datos').push().key;
+   var correo = document.getElementById('correo').value;
+   var direccion= document.getElementById('direccion').value;  
+   var director = document.getElementById('director').value;
+   var municipio= document.getElementById('municipio').value;  
+   var telefono = document.getElementById('telefono').value;
+   var tipo = document.getElementById('tipo').value;
+   
+   var data = {
+     user_id: uid,
+    correo: correo,
+    direccion:direccion,
+    director:director,
+    municipio:municipio,
+    telefono:telefono,
+    tipo:tipo
+   }
+   
+   var updates = {};
+   updates['/datos/' + user_id] = data;
+   firebase.database().ref().update(updates);
+   
+   alert('The user is updated successfully!');
+   
+   reload_page();
+  }
+  
+  function delete_user(){
+   var user_id = document.getElementById('user_id').value;
+  
+   firebase.database().ref().child('/datos/' + user_id).remove();
+   alert('The user is deleted successfully!');
+   reload_page();
+  }
+  
+  function reload_page(){
+   window.location.reload();
+  }
+  
+ </script>
+ 
+</body>
+</html>
